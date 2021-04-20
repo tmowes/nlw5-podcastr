@@ -2,7 +2,12 @@ import Head from 'next/head'
 
 import { MetaTagsProps } from './types'
 
-const MetaTags = ({ title, description, canonical, image }: MetaTagsProps) => {
+export const MetaTags = ({
+  title,
+  description,
+  canonical,
+  image,
+}: MetaTagsProps) => {
   const pageTitle = title ? `${title} | podcastR` : 'podcastR'
   const pageDescription =
     description ??
@@ -42,5 +47,3 @@ const MetaTags = ({ title, description, canonical, image }: MetaTagsProps) => {
     </Head>
   )
 }
-
-export default MetaTags
