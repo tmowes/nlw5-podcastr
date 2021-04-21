@@ -12,7 +12,14 @@ export const Header = () => {
 
   return (
     <Flex bg="gray.800" w="100%">
-      <Flex as="header" w="100%" maxW={1240} h={['12', '24']} ml="auto" px="4">
+      <Flex
+        as="header"
+        w="100%"
+        maxW={1240}
+        h={['12', '24']}
+        ml="auto"
+        px={['4', '8', '16']}
+      >
         <Image
           src="/assets/logo.svg"
           alt="podcastr logo"

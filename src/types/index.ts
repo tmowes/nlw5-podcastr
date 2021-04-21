@@ -1,12 +1,29 @@
 export type HomeProps = {
-  episodes: Episode[]
+  latestEpisodes: FormattedEpisode[]
+  allEpisodes: FormattedEpisode[]
+}
+
+export type EpisodeProps = {
+  episode: FormattedEpisode
+}
+
+export type FormattedEpisode = {
+  id: string
+  title: string
+  members: string
+  publishedAt: string
+  thumbnail: string
+  description: string
+  duration: number
+  durationString: string
+  url: string
 }
 
 export type Episode = {
   id: string
   title: string
   members: string
-  published_at: Date
+  published_at: string
   thumbnail: string
   description: string
   file: File
