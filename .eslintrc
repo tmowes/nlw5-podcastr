@@ -11,6 +11,7 @@
         "arrowParens": "avoid"
       }
     ],
-    "no-empty-pattern": "off"
+    "no-empty-pattern": "off",
+    "jsx-a11y/media-has-caption": "off"
   }
 }

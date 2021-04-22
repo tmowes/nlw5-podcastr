@@ -25,9 +25,11 @@ import * as C from '~/components'
 import { api } from '~/services'
 import { Episode, HomeProps } from '~/types'
 import { convertDurationToTimeString } from '~/utils'
+import { usePlayer } from '~/contexts'
 
 export default function Home(props: HomeProps) {
   const { latestEpisodes, allEpisodes } = props
+  const { play } = usePlayer()
   return (
     <>
       <C.MetaTags />
@@ -84,6 +86,8 @@ export default function Home(props: HomeProps) {
                 members,
                 publishedAt,
                 durationString,
+                duration,
+                url,
               }) => (
                 <Tr key={id}>
                   <Td>
@@ -128,6 +132,15 @@ export default function Home(props: HomeProps) {
                       h="12"
                       borderRadius="12"
                       ml="0"
+                      onClick={() =>
+                        play({
+                          title,
+                          members,
+                          thumbnail,
+                          duration,
+                          url,
+                        })
+                      }
                       colorScheme="whiteAlpha"
                       icon={<Image src="/assets/play-orange.svg" alt="Tocar" />}
                     />

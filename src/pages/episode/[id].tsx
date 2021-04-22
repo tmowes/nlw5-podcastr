@@ -20,8 +20,10 @@ import * as C from '~/components'
 import { Episode, EpisodeProps } from '~/types'
 import { api } from '~/services'
 import { convertDurationToTimeString } from '~/utils'
+import { usePlayer } from '~/contexts'
 
 export default function EpisodePage(props: EpisodeProps) {
+  const { play } = usePlayer()
   const {
     episode: {
       title,
@@ -30,6 +32,8 @@ export default function EpisodePage(props: EpisodeProps) {
       publishedAt,
       durationString,
       description,
+      duration,
+      url,
     },
   } = props
   return (
@@ -72,17 +76,29 @@ export default function EpisodePage(props: EpisodeProps) {
             borderRadius="12"
             ml="-6"
             colorScheme="whiteAlpha"
+            onClick={() =>
+              play({
+                title,
+                thumbnail,
+                members,
+                duration,
+                url,
+              })
+            }
             icon={
               <Image src="/assets/play-orange.svg" boxSize="10" alt="Tocar" />
             }
           />
         </Flex>
         <Flex px="16" direction="column">
-          <Heading mb="6">{title}</Heading>
+          <Heading mb="6" fontSize="2rem">
+            {title}
+          </Heading>
           <HStack>
             <Text
               textAlign="left"
               fontSize="0.875rem"
+              color="gray.400"
               whiteSpace="nowrap"
               overflow="hidden"
               textOverflow="ellipsis"
@@ -90,12 +106,19 @@ export default function EpisodePage(props: EpisodeProps) {
             >
               {members}
             </Text>
-            <Text>•</Text>
-            <Text whiteSpace="nowrap" textAlign="center" fontSize="0.875rem">
+            <Text color="gray.400">•</Text>
+            <Text
+              whiteSpace="nowrap"
+              textAlign="center"
+              fontSize="0.875rem"
+              color="gray.400"
+            >
               {publishedAt}
             </Text>
-            <Text>•</Text>
-            <Text fontSize="0.875rem">{durationString}</Text>
+            <Text color="gray.400">•</Text>
+            <Text fontSize="0.875rem" color="gray.400">
+              {durationString}
+            </Text>
           </HStack>
           <Divider mt="2" mb="6" />
           <Text dangerouslySetInnerHTML={{ __html: description }} />

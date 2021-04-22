@@ -10,10 +10,22 @@ import {
   VStack,
 } from '@chakra-ui/react'
 
+import { usePlayer } from '~/contexts'
+
 import { EpisodeCardProps } from './types'
 
 export const EpisodeCard = (props: EpisodeCardProps) => {
-  const { id, title, thumbnail, members, publishedAt, durationString } = props
+  const {
+    id,
+    title,
+    thumbnail,
+    members,
+    publishedAt,
+    durationString,
+    duration,
+    url,
+  } = props
+  const { play } = usePlayer()
   return (
     <Flex
       align="center"
@@ -64,6 +76,15 @@ export const EpisodeCard = (props: EpisodeCardProps) => {
             borderRadius="12"
             ml="0"
             colorScheme="whiteAlpha"
+            onClick={() =>
+              play({
+                title,
+                members,
+                thumbnail,
+                duration,
+                url,
+              })
+            }
             icon={<Image src="/assets/play-orange.svg" alt="Tocar" />}
           />
         </HStack>
