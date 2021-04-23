@@ -46,6 +46,18 @@ export default function EpisodePage(props: EpisodeProps) {
         direction="column"
         py="12"
         px="16"
+        css={{
+          '&::-webkit-scrollbar': {
+            width: '6px',
+          },
+          '&::-webkit-scrollbar-track': {
+            width: '6px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: '#565964',
+            borderRadius: '3px',
+          },
+        }}
       >
         <Flex w="100%" align="center" mb="8">
           <NextLink href="/" passHref>
