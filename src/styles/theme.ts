@@ -16,7 +16,7 @@ export const theme = extendTheme({
     orange: {
       '500': '#E65100',
     },
-    yellowAlpha: {
+    orangeAlpha: {
       '500': '#E6510080',
     },
     grayAlpha: {

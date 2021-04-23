@@ -43,6 +43,18 @@ export default function Home(props: HomeProps) {
         direction="column"
         py="12"
         px="16"
+        css={{
+          '&::-webkit-scrollbar': {
+            width: '6px',
+          },
+          '&::-webkit-scrollbar-track': {
+            width: '6px',
+          },
+          '&::-webkit-scrollbar-thumb': {
+            background: '#565964',
+            borderRadius: '3px',
+          },
+        }}
       >
         <Heading textAlign="left" mb="6">
           Últimos lançamentos

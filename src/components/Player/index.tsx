@@ -1,13 +1,9 @@
-/* eslint-disable radar/cognitive-complexity */
 import { useEffect, useRef, useState } from 'react'
 
 import {
   Box,
   Flex,
-  Heading,
   HStack,
-  IconButton,
-  Image,
   Slider,
   SliderFilledTrack,
   SliderThumb,
@@ -20,6 +16,12 @@ import { MdGraphicEq } from 'react-icons/md'
 import { usePlayer } from '~/contexts'
 import { convertDurationToTimeString } from '~/utils'
 
+import { Header } from './Header'
+import { EmptyCard } from './EmptyCard'
+import { Info } from './Info'
+import { ThumbnailCard } from './ThumbnailCard'
+import { Controls } from './Controls'
+
 export const Player = () => {
   const audioRef = useRef<HTMLAudioElement>(null)
   const [progress, setProgress] = useState(0)
@@ -28,16 +30,10 @@ export const Player = () => {
     episodesList,
     currentEpisodeIndex,
     isPlaying,
-    togglePlay,
     togglePlayState,
     playNext,
-    playPrevious,
     hasNext,
-    hasPrevious,
     isLooping,
-    toggleLoop,
-    isShuffling,
-    toggleShuffle,
     clearPlayerState,
   } = usePlayer()
 
@@ -87,52 +83,20 @@ export const Player = () => {
       py="8"
       px="16"
     >
-      <HStack gap="4">
-        <Image src="/assets/playing.svg" alt="Tocando agora" />
-        <Heading fontSize="14px">Tocando agora</Heading>
-      </HStack>
+      <Header />
 
       {currentPlaying ? (
-        <Flex
-          align="center"
-          justify="center"
-          h="20rem"
-          bg="grayAlpha.100"
-          borderRadius="16"
-        >
-          <Flex borderRadius="16" h="100%" w="100%" overflow="hidden">
-            <Image
-              src={currentPlaying.thumbnail}
-              alt={currentPlaying.title}
-              objectFit="cover"
-            />
-          </Flex>
-        </Flex>
+        <ThumbnailCard
+          thumbnail={currentPlaying.thumbnail}
+          title={currentPlaying.title}
+        />
       ) : (
-        <Flex
-          align="center"
-          justify="center"
-          h="20rem"
-          bg="grayAlpha.100"
-          borderColor="grayAlpha.500"
-          borderStyle="dashed"
-          borderWidth="2px"
-          borderRadius="16"
-          bgGradient="linear(to-br, grayAlpha.300, transparent)"
-        >
-          <Heading fontSize="14px" textAlign="center" color="gray.400" px="12">
-            Selecione um podcast para ouvir
-          </Heading>
-        </Flex>
+        <EmptyCard />
       )}
-      <VStack w="100%" alignSelf="stretch">
-        <Heading fontSize="1.2rem" textAlign="center" color="gray.100">
-          {currentPlaying?.title}
-        </Heading>
-        <Text fontSize="0.9rem" textAlign="center" color="gray.400">
-          {currentPlaying?.members}
-        </Text>
-      </VStack>
+      {currentPlaying && (
+        <Info title={currentPlaying.title} members={currentPlaying.members} />
+      )}
+
       <VStack w="100%" alignSelf="stretch">
         <HStack w="100%" mb="4">
           <Text color="gray.400" pr="1" fontSize="15px" fontFamily="monospace">
@@ -172,117 +136,7 @@ export const Player = () => {
             onLoadedMetadata={setupProgressListener}
           />
         )}
-        <HStack>
-          <IconButton
-            aria-label="Embaralhar"
-            w="12"
-            h="12"
-            borderRadius="12"
-            colorScheme="transparent"
-            opacity={isShuffling ? '1' : '0.5'}
-            disabled={!currentPlaying || episodesList.length === 1}
-            onClick={toggleShuffle}
-            icon={
-              <Image
-                src="/assets/controls/shuffle.svg"
-                w="5"
-                h="5"
-                filter={
-                  isShuffling
-                    ? 'brightness(0.6) invert(0.35) sepia(1) saturate(3) hue-rotate(350deg)'
-                    : ''
-                }
-                _hover={{
-                  filter: isShuffling
-                    ? 'brightness(1) invert(0.35) sepia(1) saturate(3) hue-rotate(350deg)'
-                    : '',
-                }}
-                alt="Embaralhar"
-              />
-            }
-          />
-          <IconButton
-            aria-label="Tocar anterior"
-            w="12"
-            h="12"
-            borderRadius="12"
-            colorScheme="transparent"
-            opacity={currentPlaying ? '1' : '0.5'}
-            disabled={!currentPlaying || !hasPrevious}
-            onClick={playPrevious}
-            icon={
-              <Image
-                src="/assets/controls/play-previous.svg"
-                w="5"
-                h="5"
-                alt="Tocar anterior"
-              />
-            }
-          />
-          <IconButton
-            aria-label={isPlaying ? 'Parar' : 'Tocar'}
-            w="12"
-            h="12"
-            borderRadius="12"
-            colorScheme="whiteAlpha"
-            opacity={currentPlaying ? '1' : '0.5'}
-            disabled={!currentPlaying}
-            onClick={togglePlay}
-            icon={
-              isPlaying ? (
-                <Image src="/assets/controls/pause.svg" alt="Parar" />
-              ) : (
-                <Image src="/assets/controls/play.svg" alt="Tocar" />
-              )
-            }
-          />
-          <IconButton
-            aria-label="Tocar proxima"
-            w="12"
-            h="12"
-            borderRadius="12"
-            colorScheme="transparent"
-            opacity={currentPlaying ? '1' : '0.5'}
-            disabled={!currentPlaying || !hasNext}
-            onClick={playNext}
-            icon={
-              <Image
-                src="/assets/controls/play-next.svg"
-                w="5"
-                h="5"
-                alt="Tocar proxima"
-              />
-            }
-          />
-          <IconButton
-            aria-label="Repetir"
-            w="12"
-            h="12"
-            borderRadius="12"
-            colorScheme="transparent"
-            opacity={isLooping ? '1' : '0.5'}
-            disabled={!currentPlaying}
-            onClick={toggleLoop}
-            icon={
-              <Image
-                src="/assets/controls/repeat.svg"
-                w="5"
-                h="5"
-                filter={
-                  isLooping
-                    ? 'brightness(0.6) invert(0.35) sepia(1) saturate(3) hue-rotate(350deg)'
-                    : ''
-                }
-                _hover={{
-                  filter: isLooping
-                    ? 'brightness(1) invert(0.35) sepia(1) saturate(3) hue-rotate(350deg)'
-                    : '',
-                }}
-                alt="Repetir"
-              />
-            }
-          />
-        </HStack>
+        <Controls currentPlaying={currentPlaying} />
       </VStack>
     </Flex>
   )

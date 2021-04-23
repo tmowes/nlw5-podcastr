@@ -12,6 +12,7 @@
       }
     ],
     "no-empty-pattern": "off",
-    "jsx-a11y/media-has-caption": "off"
+    "jsx-a11y/media-has-caption": "off",
+    "radar/no-duplicate-string": "off"
   }
 }
