@@ -29,10 +29,13 @@ import { usePlayer } from '~/contexts'
 
 export default function Home(props: HomeProps) {
   const { latestEpisodes, allEpisodes } = props
-  const { play } = usePlayer()
+  const { playList } = usePlayer()
+
+  const episodesList = [...latestEpisodes, ...allEpisodes]
+
   return (
     <>
-      <C.MetaTags />
+      <C.MetaTags title="Home" />
       <Flex
         flex="1"
         maxHeight="calc(100vh - 6rem)"
@@ -55,8 +58,13 @@ export default function Home(props: HomeProps) {
           ]}
           justifyItems="center"
         >
-          {latestEpisodes.map(latestEpisode => (
-            <C.EpisodeCard key={latestEpisode.id} {...latestEpisode} />
+          {latestEpisodes.map((latestEpisode, index) => (
+            <C.EpisodeCard
+              key={latestEpisode.id}
+              index={index}
+              latestEpisode={latestEpisode}
+              episodesList={episodesList}
+            />
           ))}
         </SimpleGrid>
         <Heading textAlign="left" mb="6">
@@ -79,16 +87,10 @@ export default function Home(props: HomeProps) {
           </Thead>
           <Tbody>
             {allEpisodes.map(
-              ({
-                id,
-                thumbnail,
-                title,
-                members,
-                publishedAt,
-                durationString,
-                duration,
-                url,
-              }) => (
+              (
+                { id, thumbnail, title, members, publishedAt, durationString },
+                index
+              ) => (
                 <Tr key={id}>
                   <Td>
                     <Image
@@ -133,13 +135,7 @@ export default function Home(props: HomeProps) {
                       borderRadius="12"
                       ml="0"
                       onClick={() =>
-                        play({
-                          title,
-                          members,
-                          thumbnail,
-                          duration,
-                          url,
-                        })
+                        playList(episodesList, index + latestEpisodes.length)
                       }
                       colorScheme="whiteAlpha"
                       icon={<Image src="/assets/play-orange.svg" alt="Tocar" />}

@@ -1,4 +1,5 @@
-import { useEffect, useRef } from 'react'
+/* eslint-disable radar/cognitive-complexity */
+import { useEffect, useRef, useState } from 'react'
 
 import {
   Box,
@@ -17,15 +18,27 @@ import {
 import { MdGraphicEq } from 'react-icons/md'
 
 import { usePlayer } from '~/contexts'
+import { convertDurationToTimeString } from '~/utils'
 
 export const Player = () => {
   const audioRef = useRef<HTMLAudioElement>(null)
+  const [progress, setProgress] = useState(0)
+
   const {
     episodesList,
     currentEpisodeIndex,
     isPlaying,
     togglePlay,
     togglePlayState,
+    playNext,
+    playPrevious,
+    hasNext,
+    hasPrevious,
+    isLooping,
+    toggleLoop,
+    isShuffling,
+    toggleShuffle,
+    clearPlayerState,
   } = usePlayer()
 
   useEffect(() => {
@@ -40,6 +53,28 @@ export const Player = () => {
   }, [isPlaying])
 
   const currentPlaying = episodesList[currentEpisodeIndex]
+
+  const setupProgressListener = () => {
+    audioRef.current.currentTime = 0
+
+    audioRef.current.addEventListener('timeupdate', () => {
+      setProgress(Math.floor(audioRef.current.currentTime))
+    })
+  }
+
+  const handleSeek = (amount: number) => {
+    audioRef.current.currentTime = amount
+    setProgress(amount)
+  }
+
+  const handleEpisodeEnded = () => {
+    if (hasNext) {
+      playNext()
+    } else {
+      setProgress(0)
+      clearPlayerState()
+    }
+  }
 
   return (
     <Flex
@@ -100,13 +135,17 @@ export const Player = () => {
       </VStack>
       <VStack w="100%" alignSelf="stretch">
         <HStack w="100%" mb="4">
-          <Text color="gray.400" pr="1">
-            00:00
+          <Text color="gray.400" pr="1" fontSize="15px" fontFamily="monospace">
+            {convertDurationToTimeString(progress)}
           </Text>
 
           <Slider
             aria-label="slider-ex-1"
             defaultValue={0}
+            value={progress}
+            onChange={handleSeek}
+            min={0}
+            max={currentPlaying?.duration ?? 100}
             disabled={!currentPlaying}
           >
             <SliderTrack bg="grayAlpha.500">
@@ -117,8 +156,8 @@ export const Player = () => {
             </SliderThumb>
           </Slider>
 
-          <Text color="gray.400" pl="1">
-            00:00
+          <Text color="gray.400" fontSize="15px" fontFamily="monospace" pl="1">
+            {convertDurationToTimeString(currentPlaying?.duration ?? 0)}
           </Text>
         </HStack>
         {currentPlaying && (
@@ -126,8 +165,11 @@ export const Player = () => {
             ref={audioRef}
             src={currentPlaying.url}
             autoPlay
+            loop={isLooping}
+            onEnded={handleEpisodeEnded}
             onPlay={() => togglePlayState(true)}
             onPause={() => togglePlayState(false)}
+            onLoadedMetadata={setupProgressListener}
           />
         )}
         <HStack>
@@ -137,13 +179,24 @@ export const Player = () => {
             h="12"
             borderRadius="12"
             colorScheme="transparent"
-            opacity={currentPlaying ? '1' : '0.5'}
-            disabled={!currentPlaying}
+            opacity={isShuffling ? '1' : '0.5'}
+            disabled={!currentPlaying || episodesList.length === 1}
+            onClick={toggleShuffle}
             icon={
               <Image
                 src="/assets/controls/shuffle.svg"
                 w="5"
                 h="5"
+                filter={
+                  isShuffling
+                    ? 'brightness(0.6) invert(0.35) sepia(1) saturate(3) hue-rotate(350deg)'
+                    : ''
+                }
+                _hover={{
+                  filter: isShuffling
+                    ? 'brightness(1) invert(0.35) sepia(1) saturate(3) hue-rotate(350deg)'
+                    : '',
+                }}
                 alt="Embaralhar"
               />
             }
@@ -155,7 +208,8 @@ export const Player = () => {
             borderRadius="12"
             colorScheme="transparent"
             opacity={currentPlaying ? '1' : '0.5'}
-            disabled={!currentPlaying}
+            disabled={!currentPlaying || !hasPrevious}
+            onClick={playPrevious}
             icon={
               <Image
                 src="/assets/controls/play-previous.svg"
@@ -189,7 +243,8 @@ export const Player = () => {
             borderRadius="12"
             colorScheme="transparent"
             opacity={currentPlaying ? '1' : '0.5'}
-            disabled={!currentPlaying}
+            disabled={!currentPlaying || !hasNext}
+            onClick={playNext}
             icon={
               <Image
                 src="/assets/controls/play-next.svg"
@@ -205,13 +260,24 @@ export const Player = () => {
             h="12"
             borderRadius="12"
             colorScheme="transparent"
-            opacity={currentPlaying ? '1' : '0.5'}
+            opacity={isLooping ? '1' : '0.5'}
             disabled={!currentPlaying}
+            onClick={toggleLoop}
             icon={
               <Image
                 src="/assets/controls/repeat.svg"
                 w="5"
                 h="5"
+                filter={
+                  isLooping
+                    ? 'brightness(0.6) invert(0.35) sepia(1) saturate(3) hue-rotate(350deg)'
+                    : ''
+                }
+                _hover={{
+                  filter: isLooping
+                    ? 'brightness(1) invert(0.35) sepia(1) saturate(3) hue-rotate(350deg)'
+                    : '',
+                }}
                 alt="Repetir"
               />
             }

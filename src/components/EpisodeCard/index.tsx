@@ -15,17 +15,16 @@ import { usePlayer } from '~/contexts'
 import { EpisodeCardProps } from './types'
 
 export const EpisodeCard = (props: EpisodeCardProps) => {
+  const { index, latestEpisode, episodesList } = props
   const {
-    id,
-    title,
     thumbnail,
+    title,
+    id,
     members,
     publishedAt,
     durationString,
-    duration,
-    url,
-  } = props
-  const { play } = usePlayer()
+  } = latestEpisode
+  const { playList } = usePlayer()
   return (
     <Flex
       align="center"
@@ -76,15 +75,7 @@ export const EpisodeCard = (props: EpisodeCardProps) => {
             borderRadius="12"
             ml="0"
             colorScheme="whiteAlpha"
-            onClick={() =>
-              play({
-                title,
-                members,
-                thumbnail,
-                duration,
-                url,
-              })
-            }
+            onClick={() => playList(episodesList, index)}
             icon={<Image src="/assets/play-orange.svg" alt="Tocar" />}
           />
         </HStack>

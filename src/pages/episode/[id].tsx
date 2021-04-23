@@ -38,7 +38,7 @@ export default function EpisodePage(props: EpisodeProps) {
   } = props
   return (
     <>
-      <C.MetaTags />
+      <C.MetaTags title={title} />
       <Flex
         flex="1"
         maxHeight="calc(100vh - 6rem)"
